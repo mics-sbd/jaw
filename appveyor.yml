@@ -1,7 +1,0 @@
-version: 1.0.{build}
-image: Ubuntu1604
-build_script:
-- sh: cargo build --release
-artifacts:
-- path: target/release/jaw
-  type: file

@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build Release
+        shell: bash
+        run: cargo build --release
+        
+      - name: Upload Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: jaw
+          path: target/release/jaw

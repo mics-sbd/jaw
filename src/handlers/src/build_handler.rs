@@ -15,7 +15,7 @@ fn parse_command(cmd: &str, arg: &str) -> Result<(), Error> {
 
     reader
         .lines()
-        .for_each(|line| println!("{}", line.unwrap()));
+        .for_each(|line| println!("{:#}", line.unwrap()));
 
     Ok(())
 }
@@ -52,7 +52,7 @@ impl BuildHandler {
 
     pub fn run(self) -> Result<(), Error> {
         parse_command("pwsh", &resolve_script(&format!("symlink.ps1 -targetPath {}", self.context)))?;
-        parse_command("pwsh", &resolve_script("build.ps1 -ProjectType LLVM"))?;
+        parse_command("pwsh", &resolve_script("build.ps1"))?;
         parse_command("pwsh", &resolve_script("unsymlink.ps1"))?;
         Ok(())
     }

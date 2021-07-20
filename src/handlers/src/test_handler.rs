@@ -13,7 +13,7 @@ fn parse_command(cmd: &str, arg: &str) -> Result<(), Error> {
 
     reader
         .lines()
-        .for_each(|line| println!("{}", line.unwrap()));
+        .for_each(|line| println!("{:?}", line.unwrap()));
 
     Ok(())
 }

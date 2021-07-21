@@ -1,5 +1,8 @@
+extern crate structopt;
+
 use std::io::{BufRead, BufReader, Error, ErrorKind};
 use std::process::{Command, Stdio};
+use structopt::StructOpt;
 
 fn parse_command(cmd: &str, arg: &str) -> Result<(), Error> {
     let stdout = Command::new(cmd)
@@ -13,7 +16,7 @@ fn parse_command(cmd: &str, arg: &str) -> Result<(), Error> {
 
     reader
         .lines()
-        .for_each(|line| println!("{:?}", line.unwrap()));
+        .for_each(|line| println!("{}", line.unwrap()));
 
     Ok(())
 }
@@ -25,13 +28,27 @@ fn resolve_script(script_name: &str) -> String {
 
 pub struct TestHandler {}
 
+#[derive(Debug, StructOpt)]
+pub struct TestOptions {
+    #[structopt(short, long, default_value = "*")]
+    filter: String,
+}
+
 impl TestHandler {
     pub fn new() -> Self {
         Self {}
     }
 
-    pub fn run(self) -> Result<(), Error> {
-        parse_command("pwsh", &resolve_script("test.ps1"))?;
+    pub fn run(self, options: TestOptions) -> Result<(), Error> {
+        let command = if options.filter != "" {
+            let cmd = format!("test.ps1 -Filter {}", options.filter);
+            cmd
+        } else {
+            let cmd = format!("test.ps1");
+            cmd
+        };
+
+        parse_command("pwsh", &resolve_script(&command))?;
         Ok(())
     }
 }

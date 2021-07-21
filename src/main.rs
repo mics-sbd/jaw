@@ -2,9 +2,9 @@ extern crate structopt;
 
 use std::io::Error;
 
-use handlers::build_handler::BuildHandler;
+use handlers::build_handler::{BuildHandler, BuildOptions};
 use handlers::init_handler::InitHandler;
-use handlers::test_handler::TestHandler;
+use handlers::test_handler::{TestHandler, TestOptions};
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
@@ -16,9 +16,9 @@ struct Cli {
 
 #[derive(Debug, StructOpt)]
 enum Action {
-    Build,
+    Build(BuildOptions),
     Init,
-    Test,
+    Test(TestOptions),
 }
 
 fn main() -> Result<(), Error> {
@@ -31,8 +31,8 @@ fn main() -> Result<(), Error> {
 
     // Dispatch
     match opt.action {
-        Action::Build => build_handler.run(),
-        Action::Test => test_handler.run(),
+        Action::Build(options) => build_handler.run(options),
+        Action::Test(options) => test_handler.run(options),
         Action::Init => init_handler.run(),
     }
 }

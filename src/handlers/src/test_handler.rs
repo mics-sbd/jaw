@@ -1,7 +1,7 @@
 extern crate structopt;
 
 use std::io::{BufRead, BufReader, Error, ErrorKind};
-use std::process::{Command, Stdio, exit};
+use std::process::{exit, Command, Stdio};
 use structopt::clap::arg_enum;
 use structopt::StructOpt;
 
@@ -40,15 +40,20 @@ arg_enum! {
 pub struct TestOptions {
     #[structopt(possible_values = &ProjectType::variants(), case_insensitive = true, default_value="LLVM")]
     project_type: ProjectType,
-    #[structopt(short, long, default_value = "*")]
+    #[structopt(short, long, default_value = "*", help = "gtest compatible filter")]
     filter: String,
-    #[structopt(long, default_value = "0")]
+    #[structopt(
+        short = "R",
+        long,
+        default_value = "0",
+        help = "Number of times to retry test binary"
+    )]
     retries: i32,
-    #[structopt(short, long)]
+    #[structopt(short, long, help = "Release Tests")]
     release: bool,
-    #[structopt(long)]
+    #[structopt(short, long, help = "Address Sanitizer Instrumented Tests")]
     asan: bool,
-    #[structopt(long)]
+    #[structopt(short = "C", long, help = "Code Coverage Instrumented Tests")]
     coverage: bool,
 }
 

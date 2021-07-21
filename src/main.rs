@@ -3,7 +3,6 @@ extern crate structopt;
 use std::io::Error;
 
 use handlers::build_handler::{BuildHandler, BuildOptions};
-use handlers::init_handler::InitHandler;
 use handlers::test_handler::{TestHandler, TestOptions};
 use structopt::StructOpt;
 
@@ -11,13 +10,14 @@ use structopt::StructOpt;
 struct Cli {
     #[structopt(subcommand)]
     /// Action to take
-    action: Action,
+    subcommand: Subcommand,
 }
 
 #[derive(Debug, StructOpt)]
-enum Action {
+enum Subcommand {
+    #[structopt(about = "Builds current repo")]
     Build(BuildOptions),
-    Init,
+    #[structopt(about = "Runs tests")]
     Test(TestOptions),
 }
 
@@ -26,13 +26,11 @@ fn main() -> Result<(), Error> {
 
     // Load Handlers
     let build_handler = BuildHandler::new();
-    let init_handler = InitHandler::new();
     let test_handler = TestHandler::new();
 
     // Dispatch
-    match opt.action {
-        Action::Build(options) => build_handler.run(options),
-        Action::Test(options) => test_handler.run(options),
-        Action::Init => init_handler.run(),
+    match opt.subcommand {
+        Subcommand::Build(options) => build_handler.run(options),
+        Subcommand::Test(options) => test_handler.run(options),
     }
 }

@@ -5,8 +5,8 @@ use std::fs;
 use std::io::{BufRead, BufReader, Error, ErrorKind};
 use std::process::exit;
 use std::process::{Command, Stdio};
-use structopt::StructOpt;
 use structopt::clap::arg_enum;
+use structopt::StructOpt;
 
 fn parse_command(cmd: &str, arg: &str) -> Result<(), Error> {
     let stdout = Command::new(cmd)
@@ -59,13 +59,13 @@ arg_enum! {
 pub struct BuildOptions {
     #[structopt(possible_values = &ProjectType::variants(), case_insensitive = true, default_value="LLVM")]
     project_type: ProjectType,
-    #[structopt(short, long)]
+    #[structopt(short, long, help = "Cleans Build directory")]
     clean: bool,
-    #[structopt(short, long)]
+    #[structopt(short, long, help = "Release Build")]
     release: bool,
-    #[structopt(long)]
+    #[structopt(short, long, help = "Address Sanitizer Instrumented Build")]
     asan: bool,
-    #[structopt(long)]
+    #[structopt(short = "C", long, help = "Code Coverage Instrumented Build")]
     coverage: bool,
 }
 
@@ -77,7 +77,6 @@ impl BuildHandler {
     }
 
     pub fn run(self, build_options: BuildOptions) -> Result<(), Error> {
-
         let mut command = format!(
             "build.ps1 -ProjectType {} -IDE vs",
             build_options.project_type
@@ -94,14 +93,14 @@ impl BuildHandler {
                 println!("Asan and Coverage are mutually exclusive!");
                 exit(1);
             }
-            &command.push_str( " -Asan");
+            &command.push_str(" -Asan");
         }
         if build_options.coverage {
             if build_options.asan {
                 println!("Asan and Coverage are mutually exclusive!");
                 exit(1);
             }
-            &command.push_str( " -Coverage");
+            &command.push_str(" -Coverage");
         }
 
         parse_command(

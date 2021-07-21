@@ -3,6 +3,7 @@ extern crate structopt;
 use std::env;
 use std::fs;
 use std::io::{BufRead, BufReader, Error, ErrorKind};
+use std::process::exit;
 use std::process::{Command, Stdio};
 use structopt::StructOpt;
 use structopt::clap::arg_enum;
@@ -91,12 +92,14 @@ impl BuildHandler {
         if build_options.asan {
             if build_options.coverage {
                 println!("Asan and Coverage are mutually exclusive!");
+                exit(1);
             }
             &command.push_str( " -Asan");
         }
         if build_options.coverage {
             if build_options.asan {
                 println!("Asan and Coverage are mutually exclusive!");
+                exit(1);
             }
             &command.push_str( " -Coverage");
         }
